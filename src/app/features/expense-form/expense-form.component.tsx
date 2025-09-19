@@ -30,7 +30,7 @@ export default function ExpenseForm() {
     const [account, setAccount] = React.useState<ItemList | null>(null);
     const { dispatch } = useExpenses();
     const stepDescriptions = [
-        "Ingresa un valor",
+        "Ingresa un monto",
         "Ingresa una descripción",
         "Ingresa una categoría",
         "Ingresa una fecha",
@@ -69,8 +69,31 @@ export default function ExpenseForm() {
             id: 8,
             description: "laundry"
         },
+        {
+            id: 9,
+            description: "shopping"
+        },
+        {
+            id: 10,
+            description: "ice cream"
+        },
+        {
+            id: 11,
+            description: "holidays"
+        },
+        {
+            id: 12,
+            description: "pets"
+        },
+        {
+            id: 13,
+            description: "coffee shop"
+        },
+        {
+            id: 14,
+            description: "rocket"
+        },
     ]
-
     const accounts = [
         {
             id: 1,
@@ -91,10 +114,10 @@ export default function ExpenseForm() {
             setStep(step + 1);
         } else {
             setStep(0);
-            console.table([amount, detail, category, date, account]);
+            console.log([amount, detail, category, date, account]);
             dispatch({
                 type: "ADD_EXPENSE",
-                payload: {amount, detail, category, date, account}
+                payload: { amount, detail, category, date, account }
             })
             setOpen(false);
         }
@@ -105,8 +128,44 @@ export default function ExpenseForm() {
             setStep(step - 1);
         }
     }
+
+    function closeAndReset() {
+        setStep(0);
+        setOpen(false);
+    }
+
+    function getInputValue<T extends string | number>(
+        e: React.ChangeEvent<HTMLInputElement>,
+        type: "text" | "number"
+    ): T {
+        const value = e.target.value;
+        if (type === "number") {
+            return Number(value) as T;
+        }
+        return value as T;
+    }
+
+
+    function handleAmount(e: React.ChangeEvent<HTMLInputElement>) {
+        setAmount(getInputValue<number>(e, "number"));
+    }
+
+    function handleDetail(e: React.ChangeEvent<HTMLInputElement>) {
+        setDetail(getInputValue<string>(e, "text"));
+    }
+
+    function handleCategory(category: ItemList) {
+        setCategory(category);
+        nextStep();
+    }
+
+    function handleAccount(account: ItemList) {
+        setAccount(account);
+        nextStep();
+    }
+
     return (
-        <Drawer open={open} onOpenChange={setOpen}>
+        <Drawer open={open} onOpenChange={setOpen} onClose={() => setStep(0)}>
             <DrawerTrigger asChild>
                 <Button>Nuevo gasto</Button>
             </DrawerTrigger>
@@ -119,17 +178,17 @@ export default function ExpenseForm() {
                     <AnimatePresence mode="wait">
                         {step === 0 && (
                             <AnimatedStep id="stepAmount" initialX={0} initialOpacity={1} exitX={-200} exitOpacity={0}>
-                                <AppInput id="amount" type="number" label="Monto" expand={true} placeholder="0.0" useMono={true} onChange={(value) => setAmount(Number(value))} />
+                                <AppInput id="amount" useAutoFocus={true} type="number" label="Monto" expand={true} placeholder="0.0" useMono={true} onChange={handleAmount} />
                             </AnimatedStep>
                         )}
                         {step === 1 && (
                             <AnimatedStep id="stepDetail" initialX={200} initialOpacity={0} animateX={0} animateOpacity={1} exitX={-200} exitOpacity={0} >
-                                <AppInput id="detail" type="text" label="Descripción" expand={true} placeholder="Compra" onChange={(value) => setDetail(value)} />
+                                <AppInput id="detail" useAutoFocus={true} type="text" label="Descripción" expand={true} placeholder="Compra" onChange={handleDetail} />
                             </AnimatedStep>
                         )}
                         {step === 2 && (
                             <AnimatedStep id="stepCategory" initialX={200} initialOpacity={0} animateX={0} animateOpacity={1} exitX={-200} exitOpacity={0} >
-                                <AppFilterList list={categories} placeholder="Buscar categoría" onChange={(category) => setCategory(category)} />
+                                <AppFilterList list={categories} placeholder="Buscar categoría" onChange={(category) => handleCategory(category)} />
                             </AnimatedStep>
                         )}
                         {step === 3 && (
@@ -139,7 +198,7 @@ export default function ExpenseForm() {
                         )}
                         {step === 4 && (
                             <AnimatedStep id="stepAccount" initialX={200} initialOpacity={0} animateX={0} animateOpacity={1} exitX={-200} exitOpacity={0} >
-                                <AppFilterList list={accounts} placeholder="Buscar cuenta" allowFilter={false} onChange={(account) => setAccount(account)} />
+                                <AppFilterList list={accounts} placeholder="Buscar cuenta" allowFilter={false} onChange={(account) => handleAccount(account)} />
                             </AnimatedStep>
                         )}
                     </AnimatePresence>
@@ -159,7 +218,7 @@ export default function ExpenseForm() {
                         <Button type="button" onClick={() => nextStep()}>Siguiente</Button>
                     }
                     <DrawerClose asChild>
-                        <Button type="button" variant="outline" className="w-full" onClick={() => setOpen(false)}>Cancelar</Button>
+                        <Button type="button" variant="outline" className="w-full" onClick={() => closeAndReset()}>Cancelar</Button>
                     </DrawerClose>
                 </DrawerFooter>
             </DrawerContent>

@@ -22,7 +22,7 @@ const AppFilterList: React.FC<Props> = ({
         <Button
             key={e.id}
             variant={`${selected === e.id ? "default" : "outline"}`}
-            className={`capitalize`}
+            className={`capitalize w-full`}
             onClick={() => handleSelect(e)}>
             {e.description}
         </Button>
@@ -39,8 +39,10 @@ const AppFilterList: React.FC<Props> = ({
                 <AppInput id="searchBar" type="string" placeholder={placeholder} expand={true} onChange={() => { }} />
             </div>
             }
-            <div className="flex flex-row flex-wrap gap-3 max-h-30 overflow-auto">
-                {entriesList}
+            <div className="overflow-auto">
+                <div className="flex flex-row flex-wrap gap-3 h-[100px]">
+                    {entriesList}
+                </div>
             </div>
         </div>
     )

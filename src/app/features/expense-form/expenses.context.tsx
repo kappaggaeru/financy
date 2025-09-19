@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer } from "react"
 import { ItemList } from "./item-list.model"
 
-type Expense = {
+export type Expense = {
     amount: number
     detail: string
     category: ItemList | null
