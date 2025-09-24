@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "../ui/button";
 import AppInput from "./app-input.component";
-import { ItemList } from "@/app/features/expense-form/item-list.model";
+import { ItemList } from "@/app/features/expense-drawer/item-list.model";
 
 type Props = {
     list: ItemList[],

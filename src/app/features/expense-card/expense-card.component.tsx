@@ -1,4 +1,4 @@
-import { Expense } from "../expense-form/expenses.context";
+import { Expense } from "../expense-drawer/expenses.context";
 
 export const ExpenseCard: React.FC<Expense> = ({
     amount,
