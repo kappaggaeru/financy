@@ -4,16 +4,19 @@ import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { ChevronDownIcon } from "lucide-react";
+import { enUS, es } from "react-day-picker/locale"
 
 type Props = {
     label?: string,
     expand?: boolean,
+    locale?: string,
     onChange: (date: Date | undefined) => void
 }
 
 export const AppCalendar: React.FC<Props> = ({
     label,
     expand = false,
+    locale = 'es',
     onChange
 }) => {
     const [open, setOpen] = React.useState(false);
@@ -39,7 +42,7 @@ export const AppCalendar: React.FC<Props> = ({
                         id="date"
                         className={`${expand ? "w-full" : ""} justify-between font-normal`}
                     >
-                        {date ? date.toLocaleDateString() : "Select date"}
+                        {date ? date.toLocaleDateString(locale) : "Selecciona una fecha"}
                         <ChevronDownIcon />
                     </Button>
                 </PopoverTrigger>
@@ -48,18 +51,10 @@ export const AppCalendar: React.FC<Props> = ({
                         mode="single"
                         defaultMonth={date}
                         selected={date}
+                        locale={locale === 'es' ? es : enUS}
                         onSelect={handleSelect}
                         className="rounded-lg border shadow-sm mx-auto"
                     />
-                    {/* <Calendar
-                        mode="single"
-                        selected={date}
-                        captionLayout="dropdown"
-                        onSelect={(date) => {
-                            setDate(date)
-                            setOpen(false)
-                        }}
-                    /> */}
                 </PopoverContent>
             </Popover>
         </div>

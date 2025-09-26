@@ -12,6 +12,11 @@ type Props = {
     expand?: boolean,
     useMono?: boolean,
     useAutoFocus?: boolean,
+    required?: boolean,
+    invalid?: boolean,
+    errorText?: string,
+    helpText?: string,
+    disabled?: boolean,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -25,6 +30,11 @@ const AppInput = forwardRef<HTMLInputElement, Props>(({
     expand = false,
     useMono = false,
     useAutoFocus = false,
+    required = false,
+    invalid = false,
+    errorText = "Campo requerido",
+    helpText,
+    disabled = false,
     onChange
 },
     ref
@@ -41,20 +51,37 @@ const AppInput = forwardRef<HTMLInputElement, Props>(({
     return (
         <div className={`grid w-full items-center gap-3 ${style}`}>
             {label && (
-                <Label htmlFor={id} className={`${capitalizedLabel ? "capitalize" : "normal-case"}`}>
+                <Label
+                    htmlFor={id}
+                    className={`
+                        ${capitalizedLabel ? "capitalize" : "normal-case"}
+                        ${required ? "required" : ""}
+                        ${disabled ? "disabled" : ""}
+                        ${invalid ? "invalid" : ""}
+                    `}>
                     {label}
                 </Label>)}
-            <Input
-                ref={inputRef}
-                type={type}
-                id={id}
-                placeholder={placeholder}
-                className={`
-                    ${expand ? "w-full" : "w-fit"}
-                    ${useMono ? "font-mono text-sm" : "font-sans text-sm"}
-                `}
-                onChange={onChange}
-            />
+            <div>
+                <Input
+                    ref={inputRef}
+                    type={type}
+                    id={id}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    className={`
+                        ${expand ? "w-full" : "w-fit"}
+                        ${useMono ? "font-mono text-sm" : "font-sans text-sm"}
+                        ${invalid ? "border-destructive focus-visible:ring-destructive text-destructive" : ""}
+                    `}
+                    onChange={onChange}
+                />
+                {helpText &&
+                    <span className="text-sm text-gray-400">{helpText}</span>
+                }
+                {invalid &&
+                    <span className="text-sm text-destructive">{errorText}</span>
+                }
+            </div>
         </div>
     )
 })

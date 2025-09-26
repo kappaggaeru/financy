@@ -20,6 +20,7 @@ import { AppCalendar } from "@/components/app/app-calendar.component";
 export default function ExpenseForm() {
     const [open, setOpen] = React.useState(false);
     const [amount, setAmount] = React.useState(0);
+    const [amountError, setAmountError] = React.useState(false);
     const [detail, setDetail] = React.useState("");
     const [category, setCategory] = React.useState<ItemList | null>(null);
     const [date, setDate] = React.useState<Date | undefined>();
@@ -127,20 +128,32 @@ export default function ExpenseForm() {
 
     const submitForm = () => {
         console.log([amount, detail, category, date, account]);
-        dispatch({
-            type: "ADD_EXPENSE",
-            payload: { amount, detail, category, date, account }
-        })
-        setOpen(false);
+        if (isFormValid()){
+            dispatch({
+                type: "ADD_EXPENSE",
+                payload: { amount, detail, category, date, account }
+            })
+            setOpen(false);
+        } else {
+            setFormErrors()
+        }
+    }
+
+    function isFormValid(): boolean {
+        return amount > 0;
+    }
+
+    function setFormErrors(): void {
+        setAmountError(true);
     }
 
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={setOpen}>
             <form>
                 <DialogTrigger asChild>
                     <Button variant="outline" onClick={() => setOpen(!open)}>Nuevo gasto</Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="">
                     <DialogHeader>
                         <DialogTitle>Nuevo gasto</DialogTitle>
                         <DialogDescription>
@@ -148,9 +161,28 @@ export default function ExpenseForm() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4">
-                        <AppInput id="amount" useAutoFocus={false} type="number" label="Monto" expand={true} placeholder="0.0" useMono={true} onChange={handleAmount} />
-                        <AppInput id="detail" type="text" label="Descripción" expand={true} placeholder="Compra" onChange={handleDetail} />
                         <AppCalendar label="Fecha" onChange={(date) => setDate(date)} />
+                        <AppInput
+                            id="amount"
+                            type="number"
+                            label="Monto"
+                            expand={true}
+                            placeholder="0.0"
+                            useMono={true}
+                            required={true}
+                            invalid={amountError}
+                            errorText="El monto debe ser mayor a 0"
+                            onChange={handleAmount}
+                        />
+                        <AppInput
+                            id="detail"
+                            type="text"
+                            label="Descripción"
+                            expand={true}
+                            placeholder="Compra"
+                            disabled={true}
+                            onChange={handleDetail}
+                        />
                         <AppCombobox title="Categoria" list={categories} expand={true} onChange={(category) => handleCategory(category)} />
                         <AppCombobox title="Cuenta" list={accounts} expand={true} onChange={(account) => handleAccount(account)} />
                     </div>

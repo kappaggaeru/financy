@@ -173,6 +173,19 @@ body {
     body {
         @apply bg-background text-foreground;
     }
+
+    .required::after {
+        content: ' *';
+        @apply text-destructive;
+    }
+
+    .disabled {
+        @apply opacity-50;
+    }
+
+    .invalid {
+        @apply text-destructive;
+    }
 }
 
 @theme {
